@@ -87,6 +87,7 @@ export function TaskCard(task: TTask) {
 				}}
 			/>
 
+
 			{actions.editMode === "idle" && !task.completed && (
 				<button
 					onClick={() => {
