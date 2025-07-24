@@ -2,8 +2,8 @@
 
 import z from "zod";
 import { TCreateStatus } from ".";
-import { deserialize } from "v8";
 import { revalidateTag } from "next/cache";
+import { TaskService } from "@/services/TaskService";
 
 const schema = z.object({
 	description: z
@@ -26,13 +26,11 @@ export async function createTask(
 		};
 	}
 
-	try {
-		const API_ENV = process.env.NEXT_PUBLIC_API;
+	const taskService = new TaskService();
 
-		await fetch(`${API_ENV}/task`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ description: validatedFields.data.description }),
+	try {
+		await taskService.createTask({
+			description: validatedFields.data.description,
 		});
 	} catch (err) {
 		const error = err as Error;
