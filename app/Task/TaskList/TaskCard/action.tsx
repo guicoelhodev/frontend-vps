@@ -14,3 +14,11 @@ export async function editTask(taskId: string, body: Partial<TTask>) {
 
 	return revalidateTag("GET_tasks");
 }
+
+export async function deleteTask(taskId: string) {
+	const taskService = new TaskService();
+
+	await taskService.deleteTask({ id: taskId });
+
+	return revalidateTag("GET_tasks");
+}

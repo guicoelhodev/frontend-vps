@@ -7,9 +7,8 @@ export class TaskService implements T.TaskServiceContract {
 	}
 
 	async deleteTask(body: T.DeleteTaskBody) {
-		return await fetch(`${this.env}/task/${body.id}`, {
+		return fetch(`${this.env}/task/${body.id}`, {
 			method: "DELETE",
-			headers: { "Content-Type": "application/json" },
 		});
 	}
 
@@ -24,7 +23,7 @@ export class TaskService implements T.TaskServiceContract {
 	}
 
 	async createTask(body: T.CreateTaskBody) {
-		return await fetch(`${this.env}/task`, {
+		return fetch(`${this.env}/task`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ description: body.description }),

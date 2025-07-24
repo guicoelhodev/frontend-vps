@@ -2,7 +2,7 @@
 
 import { TTask } from "@/services/TaskService/TaskServiceContract";
 import { twMerge } from "tailwind-merge";
-import { editTask } from "./action";
+import { deleteTask, editTask } from "./action";
 import { useRef, useState } from "react";
 import {
 	AiOutlineLoading,
@@ -10,10 +10,11 @@ import {
 	AiOutlineCheck,
 	AiOutlineClose,
 } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 
 type TAction = {
 	isUpdate: boolean;
-	editMode: "checkbox" | "input" | "idle";
+	editMode: "checkbox" | "input" | "idle" | "delete";
 	inputDescription: string;
 };
 
@@ -51,7 +52,7 @@ export function TaskCard(task: TTask) {
 		<li
 			key={task.id}
 			className={
-				"p-2 px-4 rounded-md bg-neutral-800 text-neutral-200 flex gap-4 items-center"
+				"p-2 pl-4 rounded-md bg-neutral-800 text-neutral-200 flex gap-4 items-center"
 			}
 		>
 			{actions.isUpdate && actions.editMode === "checkbox" ? (
@@ -119,6 +120,21 @@ export function TaskCard(task: TTask) {
 				</aside>
 			)}
 			<p className="text-sm text-neutral-500">{getHour(task.createdAt)}</p>
+
+			<button
+				onClick={async () => {
+					handleActions({ editMode: "delete", isUpdate: true });
+					await deleteTask(task.id);
+					handleActions({ editMode: "idle", isUpdate: false });
+				}}
+				className="p-2 rounded-full"
+			>
+				{actions.editMode === "delete" ? (
+					<AiOutlineLoading className="animate-spin" />
+				) : (
+					<MdDelete className="text-red-400" size={20} />
+				)}
+			</button>
 		</li>
 	);
 }
