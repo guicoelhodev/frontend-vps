@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createTask } from "./createTask.action";
+import { AiOutlineLoading, AiOutlineSend } from "react-icons/ai";
 
 export type TCreateStatus = {
 	status: number | null;
@@ -30,28 +31,9 @@ export function TaskCreate() {
 
 				<button className="bg-neutral-800 aspect-square rounded-full grid  place-content-center">
 					{pending ? (
-						<svg
-							className="animate-spin"
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-						>
-							<path
-								fill="currentColor"
-								d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8"
-							/>
-						</svg>
+						<AiOutlineLoading className="animate-spin" />
 					) : (
-						<svg
-							className="translate-0.5"
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 8 8"
-						>
-							<path fill="currentColor" d="m0 0l8 3.5L0 7l1-3q5-.5 0-1" />
-						</svg>
+						<AiOutlineSend className="translate-x-0.5" size={24} />
 					)}
 				</button>
 			</article>

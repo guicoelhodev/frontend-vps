@@ -3,58 +3,121 @@
 import { TTask } from "@/services/TaskService/TaskServiceContract";
 import { twMerge } from "tailwind-merge";
 import { editTask } from "./action";
-import { useState } from "react";
-import { getTargetTriple } from "next/dist/build/swc/generated-native";
+import { useRef, useState } from "react";
+import {
+	AiOutlineLoading,
+	AiOutlineEdit,
+	AiOutlineCheck,
+	AiOutlineClose,
+} from "react-icons/ai";
+
+type TAction = {
+	isUpdate: boolean;
+	editMode: "checkbox" | "input" | "idle";
+	inputDescription: string;
+};
 
 export function TaskCard(task: TTask) {
-	const [isUpdate, setIsUpdate] = useState(false);
+	const descriptionInput = useRef<HTMLInputElement>(null);
+	const [actions, setActions] = useState<TAction>({
+		isUpdate: true,
+		editMode: "idle",
+		inputDescription: task.description,
+	});
+
+	function handleActions(obj: Partial<TAction>) {
+		return setActions((prev) => ({ ...prev, ...obj }));
+	}
 
 	function getHour(isoDate: string) {
 		return new Intl.DateTimeFormat("pt-BR", {
 			timeStyle: "short",
 		}).format(new Date(isoDate));
 	}
+
+	async function updateDescription() {
+		handleActions({ isUpdate: true });
+
+		await editTask(task.id, {
+			description: actions.inputDescription,
+		});
+
+		handleActions({ isUpdate: false, editMode: "idle" });
+
+		return (descriptionInput.current!.disabled = true);
+	}
+
 	return (
 		<li
 			key={task.id}
 			className={
-				"p-4 rounded-md bg-neutral-800 text-neutral-200 flex gap-4 items-center"
+				"p-2 px-4 rounded-md bg-neutral-800 text-neutral-200 flex gap-4 items-center"
 			}
 		>
-			{isUpdate ? (
-				<svg
-					className="animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					width="16"
-					height="16"
-					viewBox="0 0 24 24"
-				>
-					<path
-						fill="currentColor"
-						d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8"
-					/>
-				</svg>
+			{actions.isUpdate && actions.editMode === "checkbox" ? (
+				<AiOutlineLoading className="animate-spin" />
 			) : (
 				<input
 					type="checkbox"
 					className="h-4 w-4"
 					checked={task.completed}
 					onChange={async (e) => {
-						setIsUpdate(true);
+						handleActions({ isUpdate: true, editMode: "checkbox" });
 						await editTask(task.id, { completed: e.target.checked });
-						setIsUpdate(false);
+						handleActions({ isUpdate: false, editMode: "idle" });
 					}}
 				/>
 			)}
+
 			<input
 				disabled={true}
-				value={task.description}
+				ref={descriptionInput}
+				value={actions.inputDescription}
 				className={twMerge(
-					"flex-1 text-neutral-500",
+					"flex-1 text-neutral-500 p-2",
 					task.completed && "line-through",
+					actions.editMode === "input" && "text-white",
 				)}
+				onChange={(e) => handleActions({ inputDescription: e.target.value })}
+				onKeyDown={async (e) => {
+					if (actions.editMode !== "input" || e.key !== "Enter") return;
+
+					await updateDescription();
+				}}
 			/>
 
+			{actions.editMode === "idle" && !task.completed && (
+				<button
+					onClick={() => {
+						handleActions({ editMode: "input", isUpdate: false });
+						descriptionInput.current!.disabled = false;
+						return descriptionInput.current?.focus();
+					}}
+				>
+					<AiOutlineEdit />
+				</button>
+			)}
+
+			{actions.editMode === "input" && (
+				<aside className="flex gap-4">
+					<button
+						onClick={() => {
+							descriptionInput.current!.disabled = true;
+							handleActions({ editMode: "idle" });
+						}}
+					>
+						<AiOutlineClose />
+					</button>
+
+					<button disabled={actions.isUpdate} onClick={updateDescription}>
+						{actions.isUpdate ? (
+							<AiOutlineLoading className="animate-spin" />
+						) : (
+							<AiOutlineCheck />
+						)}
+					</button>
+				</aside>
+			)}
 			<p className="text-sm text-neutral-500">{getHour(task.createdAt)}</p>
 		</li>
 	);
