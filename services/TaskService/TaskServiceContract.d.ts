@@ -19,4 +19,9 @@ export type DeleteTaskBody = {
 	id: string;
 };
 
-export type TTask = { id: string; description: string; checked: boolean };
+export type TTask = {
+	id: string;
+	description: string;
+	completed: boolean;
+	createdAt: string;
+};

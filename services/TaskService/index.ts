@@ -14,11 +14,13 @@ export class TaskService implements T.TaskServiceContract {
 	}
 
 	async updateTask(body: T.UpdateTaskBody) {
-		return await fetch(`${this.env}/task`, {
+		const response = await fetch(`${this.env}/task`, {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(body),
 		});
+
+		return response;
 	}
 
 	async createTask(body: T.CreateTaskBody) {
