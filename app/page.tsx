@@ -1,10 +1,18 @@
-export default function Home() {
-  return (
-    <div className="grid w-screen h-screen place-content-center">
-      <h1 className="font-semibold text-3xl">HELLO VPS CLIENT ! 3.</h1>
-      <p>Running using webook !!</p>
+import { Task } from "./Task";
 
-			<p>{process.env.NEXT_PUBLIC_API}</p>
-    </div>
-  );
+export default function Home() {
+	return (
+		<div className="flex w-svw h-svh flex-col items-stretch justify-center">
+			<main className="flex flex-col items-center justify-center gap-4 size-full">
+				<Task />
+			</main>
+
+			<footer className="flex justify-end">
+				<span className="p-2">
+					<b>api:</b>
+					{process.env.NEXT_PUBLIC_API}
+				</span>
+			</footer>
+		</div>
+	);
 }
