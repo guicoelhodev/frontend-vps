@@ -2,9 +2,13 @@
 
 import z from "zod";
 import { TCreateStatus } from ".";
+import { deserialize } from "v8";
+import { revalidateTag } from "next/cache";
 
 const schema = z.object({
-	description: z.string().min(5, "A tarefa deve ter no mínimo 5 letras"),
+	description: z
+		.string()
+		.min(5, "Description must be at least 5 characters long"),
 });
 
 export async function createTask(
@@ -12,10 +16,8 @@ export async function createTask(
 	formData: FormData,
 ) {
 	const validatedFields = schema.safeParse({
-		description: formData.get("description-textarea"),
+		description: formData.get("description-input"),
 	});
-
-	console.log(validatedFields.error?.issues);
 
 	if (validatedFields.error) {
 		return {
@@ -24,7 +26,23 @@ export async function createTask(
 		};
 	}
 
-	await new Promise((resolve) => setTimeout(resolve, 2000));
+	try {
+		const API_ENV = process.env.NEXT_PUBLIC_API;
 
+		await fetch(`${API_ENV}/task`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ description: validatedFields.data.description }),
+		});
+	} catch (err) {
+		const error = err as Error;
+
+		return {
+			status: 400,
+			message: error.message,
+		};
+	}
+
+	revalidateTag("GET_tasks");
 	return initialData;
 }
