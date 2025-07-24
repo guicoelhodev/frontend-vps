@@ -3,6 +3,8 @@ export default function Home() {
     <div className="grid w-screen h-screen place-content-center">
       <h1 className="font-semibold text-3xl">HELLO VPS CLIENT ! 3.</h1>
       <p>Running using webook !!</p>
+
+			<p>{process.env.NEXT_PUBLIC_API}</p>
     </div>
   );
 }
