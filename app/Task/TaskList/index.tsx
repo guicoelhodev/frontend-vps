@@ -26,7 +26,7 @@ export async function TaskList() {
 		);
 	});
 	return (
-		<ul className="w-full mt-4 flex flex-col gap-4 max-h-52 overflow-auto px-4">
+		<ul className="w-full mt-4 flex flex-col gap-4 h-full sm:max-h-52 overflow-auto sm:px-4">
 			{tasksSorted.length ? (
 				tasks.reverse().map((i) => <TaskCard key={i.id} {...i} />)
 			) : (

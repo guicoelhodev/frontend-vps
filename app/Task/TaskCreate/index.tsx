@@ -20,16 +20,16 @@ export function TaskCreate() {
 	return (
 		<form
 			action={formAction}
-			className="w-full flex flex-col items-stretch gap-4 px-4"
+			className="w-full flex flex-col items-stretch gap-4 sm:px-4"
 		>
-			<article className="flex gap-4">
+			<article className="flex gap-4 items-center">
 				<input
 					name="description-input"
 					placeholder="Add your new task here"
-					className="bg-neutral-800 resize-none p-4 rounded-md w-full"
+					className="bg-neutral-800 resize-none p-4 rounded-md flex-1"
 				/>
 
-				<button className="bg-neutral-800 aspect-square rounded-full grid  place-content-center">
+				<button className="bg-neutral-800 w-16 h-16 rounded-full grid  place-content-center">
 					{pending ? (
 						<AiOutlineLoading className="animate-spin" />
 					) : (
