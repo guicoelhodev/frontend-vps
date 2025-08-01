@@ -32,13 +32,14 @@ export class TaskService implements T.TaskServiceContract {
 
 	async getTasks() {
 		const response = await fetch(`${this.env}/task`, {
+			method: "GET",
 			next: {
 				tags: ["GET_tasks"],
 			},
 		});
 
-		const data = (await response.json()) as { task: T.TTask[] };
+		const data = (await response.json()) as T.TTask[];
 
-		return data.task;
+		return data;
 	}
 }
