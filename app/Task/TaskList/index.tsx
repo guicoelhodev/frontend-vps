@@ -25,6 +25,7 @@ export async function TaskList() {
 			new Date(prev.createdAt).getTime() - new Date(curr.createdAt).getTime()
 		);
 	});
+
 	return (
 		<ul className="w-full mt-4 flex flex-col gap-4 h-full sm:max-h-52 overflow-auto sm:px-4">
 			{tasksSorted.length ? (
