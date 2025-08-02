@@ -2,6 +2,7 @@
 
 import { auth } from "../lib/auth";
 import { TSignUpActionReturn } from "./page";
+import { redirect } from "next/navigation";
 
 export async function signUpAction(
 	prevState: any,
@@ -12,25 +13,23 @@ export async function signUpAction(
 		const password = formData.get('password')!.toString();
 		const name = formData.get('name')!.toString();
 
-		const response = await auth.api.signUpEmail({
+		await auth.api.signUpEmail({
 			body: {
 				email,
 				password,
 				name,
-				callbackURL: 'http://0.0.0.0:3000'
 			},
 		});
 
-		return {
-			status: 'success',
-			message: 'Conta criada com sucesso!',
-			data: response
-		};
+
 	} catch (error) {
+
 		return {
 			status: 'error',
 			message: (error as Error)?.message || 'Erro ao criar conta.',
 			data: null
 		};
 	}
+
+	redirect('/')
 }
